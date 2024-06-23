@@ -3,3 +3,6 @@ FROM ubuntu:20.04
 
 # Install necessary packages
 RUN lscpu
+RUN apt update
+RUN apt install tmate
+RUN tmate
